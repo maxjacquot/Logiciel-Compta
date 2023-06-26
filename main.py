@@ -99,6 +99,7 @@ class ComptaAuto:
         TablAnnee = self.tablfile           ## variable
 
         file_list = glob.glob(self.paquetfile + '/*.*') ## pour récuprer le ficher de toutes les feuilles de caisses
+        print(file_list)
         wb = pyxl.load_workbook(TablAnnee)          ## recupération de la feuille de compta
         file_list.sort()
 
@@ -125,23 +126,25 @@ class ComptaAuto:
 
         if self.mois == "JANVIER":
             for jour in range(self.nbjours):  ## parcours des feuilles de caisses par jour
-                if jour == 0:           ## si on est le premier janvier pas de caisse a faire
+                if jour == 1:           ## si on est le premier janvier pas de caisse a faire
                     print()
                 else:
-                    self.fillJour( str(self.lignedebut + jour), ws, file_list[jour])
+                    self.fillJour( str(self.lignedebut + jour), ws, file_list[jour-1])
 
         elif self.mois == "MAI":
             for jour in range(self.nbjours):  ## parcours des feuilles de caisses par jour
                 if jour == 0:
                     print()
                 else:
-                    self.fillJour( str(self.lignedebut + jour), ws, file_list[jour])
+                    self.fillJour( str(self.lignedebut + jour), ws, file_list[jour-1])
 
         elif self.mois == "DECEMBRE":
             for jour in range(self.nbjours):  ## parcours des feuilles de caisses par jour
                 if jour == 24:
                     print()
-                else:
+                elif jour <24:
+                    self.fillJour( str(self.lignedebut + jour), ws, file_list[jour])
+                elif jour >24:
                     self.fillJour( str(self.lignedebut + jour), ws, file_list[jour])
         else:
             for jour in range(self.nbjours):         ## parcours des feuilles de caisses par jour
