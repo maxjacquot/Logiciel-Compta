@@ -46,7 +46,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
+          body: "Description of the release"
           draft: false
           prerelease: false
-          body: "Description of the release"
-          assets_path: dist/
+
