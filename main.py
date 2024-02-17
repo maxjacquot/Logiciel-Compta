@@ -159,7 +159,6 @@ class Application(tk.Tk):
         tk.Tk.__init__(self)
         self.geometry('400x400')
         self.resizable(width=0, height=0)
-        self.iconbitmap("Logo valid.ico")
         self.title("Compta Automatique")
         self.Compta = ComptaAuto()
         self.creer_widgets(self.Compta)
