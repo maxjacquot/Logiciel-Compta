@@ -242,7 +242,6 @@ class Application(tk.Tk):
         newWindow = tk.Toplevel(app)
         newWindow.geometry('500x100')
         newWindow.resizable(width=0, height=0)
-        newWindow.iconbitmap("Logo valid.ico")
         newWindow.title("Compta Probleme")
         label = tk.Label(newWindow, text=Message,).place(x=20,y=20)
         boutonok = tk.Button(newWindow, text="OK", command =lambda :newWindow.destroy()).place(x=135,y=65)
