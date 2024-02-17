@@ -38,14 +38,18 @@ jobs:
           name: your-application
           path: dist/
 
+      - name: Generate Tag
+        id: generate_tag
+        run: echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')"
+        # Cela génère un tag basé sur la date et l'heure actuelle
+
       - name: Create Release
-        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ steps.generate_tag.outputs.tag }}
+          release_name: Release ${{ steps.generate_tag.outputs.tag }}
           body: "Description of the release"
           draft: false
           prerelease: false
