@@ -2,8 +2,6 @@ import openpyxl as pyxl
 import glob
 import tkinter as tk
 import tkinter.font
-import csv
-import os
 from tkinter import filedialog
 
 class ComptaAuto:
