@@ -185,7 +185,7 @@ class Application(tk.Tk):
         self.opt.config(width=10, font=('Helvetica', 12))
         self.opt.place(x=20,y=180)
 
-        OptionList2 = [2018, 2019, 2020, 2021, 2022, 2023]
+        OptionList2 = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
         self.variable2 = tk.StringVar(self)
         self.variable2.set(OptionList2[4])
         self.opt2 = tk.OptionMenu(self, self.variable2, *OptionList2)
@@ -214,7 +214,7 @@ class Application(tk.Tk):
                 self.canva1.create_oval(360, 60, 390, 90, fill='red')
                 return ""
         else:
-            self.AffichageMessage("ERREUR: Extension fichier non reconnue. \n Je pense que tu es juste pas douée et que tu t'es juste trompé de fichier\n Sinon appelle Maxime il va regler le probleme")
+            self.AffichageMessage("ERREUR: Extension fichier non reconnue. \n Verifie le fichier que tu as donné au programme. \n Sinon appelle Maxime il va regler le probleme")
             self.canva1.create_oval(360, 60, 390, 90, fill='red')
             return ""
 
