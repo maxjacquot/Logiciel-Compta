@@ -4,7 +4,7 @@ import tkinter as tk
 import tkinter.font
 from tkinter import filedialog 
 
-class ComptaAuto:
+class ComptaAuto: 
     tablfile = ""         ## valeur de stockage du lien du paquet de copie
     paquetfile= ""
     mois = ""
