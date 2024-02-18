@@ -86,6 +86,7 @@ jobs:
 
       # Utilisation du nouveau tag pour les étapes suivantes
       - name: Use new tag
+        if: env.SHOULD_RUN == 'true'
         run: |
           echo "Using new tag ${{ env.NEW_TAG }} for operations"
 
