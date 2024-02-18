@@ -17,6 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
+# Etape pour vérifier le message de commit
       - name: Check Commit Message for 'nouvelle version'
         id: commit_filter
         run: |
@@ -28,10 +29,9 @@ jobs:
           fi
 
 
-
   build-and-release:
     needs: checkCommitName
-    if: ${{ needs.checkCommitName.outputs.should_run == 'true' }}
+    if: needs.format-and-check.outputs.should_run_build == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
