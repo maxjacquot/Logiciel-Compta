@@ -22,10 +22,12 @@ jobs:
           echo "Checking for 'nouvelle version' in the commit message..."
           if git log -1 --pretty=%B | grep -iq "nouvelle version"; then
             echo "SHOULD_RUN=true" >> $GITHUB_ENV
+            echo "Le message du commit posssede : nouvelle version."
           else
             echo "SHOULD_RUN=false" >> $GITHUB_ENV
+            echo "Le workflow ne va pas creer de release."
             exit 1 # Arrête le job si 'nouvelle version' n'est pas trouvé
-
+          fi
       # Configuration de l'environnement Python
       - name: Set up Python
         if: env.SHOULD_RUN == 'true'
