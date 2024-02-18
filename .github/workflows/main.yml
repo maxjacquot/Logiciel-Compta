@@ -53,10 +53,26 @@ jobs:
           name: Logiciel Feuilles de caisses 
           path: dist/
 
-      # Génération d'un tag basé sur la date et l'heure
-      - name: Generate Tag
-        if: env.SHOULD_RUN == 'true'
-        run: echo "TAG=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+ # Step pour récupérer la dernière balise annotée et extraire la version
+      - name: Get latest tag and set new tag name
+        id: versioning
+        run: |
+          latest_tag=$(git describe --tags --abbrev=0)
+          echo "Latest tag: $latest_tag"
+          # Supposons que le format du tag est vMajor.Minor.Patch
+          major=$(echo $latest_tag | cut -d '.' -f 1 | sed 's/v//')
+          minor=$(echo $latest_tag | cut -d '.' -f 2)
+          patch=$(echo $latest_tag | cut -d '.' -f 3)
+          new_patch=$((patch + 1)) # Incrémentation du numéro de patch
+          new_tag="v${major}.${minor}.${new_patch}"
+          echo "New tag: $new_tag"
+          echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
+
+      # Utilisation du nouveau tag pour les étapes suivantes
+      - name: Use new tag
+        run: |
+          echo "Using new tag ${{ env.NEW_TAG }} for operations"
+
 
       # Création de la release GitHub avec l'exécutable
       - name: Create Release
@@ -65,8 +81,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.TAG }}
-          release_name: Release ${{ env.TAG }}
+          tag_name: ${{ env.NEW_TAG }} 
+          release_name: Release ${{ env.NEW_TAG }}
           body: "Description of the release"
           draft: false
           prerelease: false
+
