@@ -26,9 +26,7 @@ jobs:
           else
             echo "SHOULD_RUN=false" >> $GITHUB_ENV
             echo "Le workflow ne va pas creer de release."
-            exit 1 # Arrête le job si 'nouvelle version' n'est pas trouvé
           fi
-            # Configuration de l'environnement Python
       - name: Set up Python
         if: env.SHOULD_RUN == 'true'
         uses: actions/setup-python@v2
