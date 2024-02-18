@@ -115,8 +115,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # Cet URL vient d'une étape précédente de création de release
-          asset_path: ./dist/main/main.exe
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/main
           asset_name: main.exe
           asset_content_type: application/octet-stream
     
