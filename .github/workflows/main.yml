@@ -14,7 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+        with:
+          fetch-depth: 0
       # Etape pour vérifier le message de commit
       - name: Check Commit Message for 'nouvelle version'
         id: commit_filter
@@ -57,22 +58,26 @@ jobs:
       - name: Get latest tag and set new tag name
         id: versioning
         run: |
-          latest_tag=$(git describe --tags --abbrev=0)
+          if ! latest_tag=$(git describe --tags --abbrev=0 2>/dev/null); then
+            echo "No tags found. Setting a default tag."
+            latest_tag="v0.0.0" # Définissez ici le tag par défaut que vous souhaitez utiliser
+          fi
           echo "Latest tag: $latest_tag"
           # Supposons que le format du tag est vMajor.Minor.Patch
           major=$(echo $latest_tag | cut -d '.' -f 1 | sed 's/v//')
           minor=$(echo $latest_tag | cut -d '.' -f 2)
           patch=$(echo $latest_tag | cut -d '.' -f 3)
           new_patch=$((patch + 1)) # Incrémentation du numéro de patch
-          new_tag="v${major}.${minor}.${new_patch}"
-          echo "New tag: $new_tag"
-          echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
+          NEW_TAG="v${major}.${minor}.${new_patch}"
+          echo "New tag: $NEW_TAG"
+          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
+        shell: bash
+
 
       # Utilisation du nouveau tag pour les étapes suivantes
       - name: Use new tag
         run: |
           echo "Using new tag ${{ env.NEW_TAG }} for operations"
-
 
       # Création de la release GitHub avec l'exécutable
       - name: Create Release
