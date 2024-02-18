@@ -54,24 +54,34 @@ jobs:
           name: Logiciel Feuilles de caisses 
           path: dist/
 
- # Step pour récupérer la dernière balise annotée et extraire la version
-      - name: Get latest tag and set new tag name
-        id: versioning
+
+      - name: Generate new version based on commit message
         run: |
           if ! latest_tag=$(git describe --tags --abbrev=0 2>/dev/null); then
             echo "No tags found. Setting a default tag."
-            latest_tag="v0.0.0" # Définissez ici le tag par défaut que vous souhaitez utiliser
+            latest_tag="v0.0.0"
           fi
           echo "Latest tag: $latest_tag"
-          # Supposons que le format du tag est vMajor.Minor.Patch
-          major=$(echo $latest_tag | cut -d '.' -f 1 | sed 's/v//')
-          minor=$(echo $latest_tag | cut -d '.' -f 2)
-          patch=$(echo $latest_tag | cut -d '.' -f 3)
-          new_patch=$((patch + 1)) # Incrémentation du numéro de patch
-          NEW_TAG="v${major}.${minor}.${new_patch}"
-          echo "New tag: $NEW_TAG"
-          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
+          major=$(echo "$latest_tag" | cut -d '.' -f 1 | sed 's/v//')
+          minor=$(echo "$latest_tag" | cut -d '.' -f 2)
+          patch=$(echo "$latest_tag" | cut -d '.' -f 3)
+          commit_message=$(git log -1 --pretty=%B)
+          
+          if echo "$commit_message" | grep -iq "majeur"; then
+            major=$((major + 1))
+            minor=0
+            patch=0
+          elif echo "$commit_message" | grep -iq "mineur"; then
+            minor=$((minor + 1))
+            patch=0
+          elif echo "$commit_message" | grep -iq "patch"; then
+            patch=$((patch + 1))
+          fi
+          new_tag="v${major}.${minor}.${patch}"
+          echo "New tag: $new_tag"
+          echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
         shell: bash
+
 
 
       # Utilisation du nouveau tag pour les étapes suivantes
