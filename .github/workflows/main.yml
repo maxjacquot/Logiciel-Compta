@@ -56,7 +56,7 @@ jobs:
             # Ajout d'une étape pour lister le contenu de ./dist/main/
       - name: List content of the dist/main directory
         if: env.SHOULD_RUN == 'true'
-        run: ls -la ./dist/main/    
+        run: ls -la ./dist/ 
 
 
       - name: Generate new version based on commit message
