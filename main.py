@@ -179,7 +179,7 @@ class Application(tk.Tk):
         OptionList = ["JANVIER","FEVRIER","MARS","AVRIL","MAI","JUIN","JUILLET","AOUT","SEPTEMBRE","OCTOBRE","NOVEMBRE", "DECEMBRE"]
         self.variable = tk.StringVar(self)
         self.variable.set(OptionList[0])
-        self.opt = tk.OptionMenu(self, self.variable, *OptionList)
+        self.opt = tk.OptionMenu(self, self.variable, *OptionList) 
         self.opt.config(width=10, font=('Helvetica', 12))
         self.opt.place(x=20,y=180)
 
