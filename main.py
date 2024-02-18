@@ -238,7 +238,7 @@ class Application(tk.Tk):
         self.canva2.create_text(100, 25, text= str(mois) + " " + str(annee), font=tkinter.font.Font(size=12))  ## Titre dans le rectangle
         self.canva2.place(x=200,y=225)
 
-    def AffichageMessage(self,Message):
+    def AffichageMessage(self,Message): 
         newWindow = tk.Toplevel(app)
         newWindow.geometry('500x100')
         newWindow.resizable(width=0, height=0)
