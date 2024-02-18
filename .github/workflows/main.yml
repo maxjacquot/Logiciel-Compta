@@ -92,6 +92,7 @@ jobs:
 
       # Création de la release GitHub avec l'exécutable
       - name: Create Release
+        id: create_release
         if: env.SHOULD_RUN == 'true'
         uses: actions/create-release@v1
         env:
