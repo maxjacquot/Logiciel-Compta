@@ -22,16 +22,16 @@ jobs:
         run: |
           echo "Checking for 'nouvelle version' in the commit message..."
           if git log -1 --pretty=%B | grep -iq "nouvelle version"; then
-            echo "SHOULD_RUN=true" >> $GITHUB_ENV
+            echo "should_run=true" >> $GITHUB_OUTPUT
           else
-            echo "SHOULD_RUN=false" >> $GITHUB_ENV
+            echo "should_run=false" >> $GITHUB_OUTPUT
           fi
 
 
 
   build-and-release:
     needs: checkCommitName
-    if: needs.checkCommitName.outputs.SHOULD_RUN == 'true'
+    if: needs.checkCommitName.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
