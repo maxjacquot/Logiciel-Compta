@@ -10,7 +10,7 @@ import os
 from packaging import version
 
 global versionApp
-versionApp= "v1.0.2"
+versionApp= "v1.0.1"
 
 class ComptaAuto:
     tablfile = ""         ## valeur de stockage du lien du paquet de copie
@@ -286,16 +286,20 @@ def update_application():
     try:
         print('dans update_application')
         release_info = get_latest_release_info()
-        print('release_info :' , release_info)
+        print('release_info', release_info)
         latest_version = release_info['tag_name']
         print('latest_version :' , latest_version)
         current_version = versionApp  # Remplacer par la logique pour obtenir la version actuelle de votre app
         print('current_version :' , current_version)
+        print('version 1 ' , version.parse(latest_version))
+        print('version 2 ' , version.parse(current_version))
         print('true or false : ' , (version.parse(latest_version) > version.parse(current_version)))
         if version.parse(latest_version) > version.parse(current_version):
             print("Une nouvelle version est disponible.")
             exe_url = next((asset['browser_download_url'] for asset in release_info['assets'] if asset['name'] == "main.exe"), None)
             print('exe_url', exe_url)
+            for asset in release_info['assets']:
+                print(asset['name'])
             if exe_url:
                 print("Téléchargement de la nouvelle version...")
                 exe_path = sys.executable
@@ -303,6 +307,7 @@ def update_application():
                 print("Mise à jour terminée. Redémarrage de l'application...")
                 os.execv(exe_path, sys.argv)  # Redémarre l'application
                 return True
+            
             return False
         return False
     except Exception as e:
@@ -310,9 +315,10 @@ def update_application():
         return False
 
 if __name__ == "__main__":
-    if(update_application() != False):
-        app = Application()
-        app.mainloop()
+    # if(update_application() != False):
+    update_application()
+    app = Application()
+    app.mainloop()
 
 print("chaussure :) " )   ##j'ai retrouvé mes chaussures !
 
