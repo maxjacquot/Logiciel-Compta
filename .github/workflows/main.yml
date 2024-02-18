@@ -17,21 +17,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      # Etape pour vérifier le message de commit
       - name: Check Commit Message for 'nouvelle version'
         id: commit_filter
         run: |
           echo "Checking for 'nouvelle version' in the commit message..."
           if git log -1 --pretty=%B | grep -iq "nouvelle version"; then
-            echo "::set-output name=should_run::true"
+            echo "SHOULD_RUN=true" >> $GITHUB_ENV
           else
-            echo "::set-output name=should_run::false"
+            echo "SHOULD_RUN=false" >> $GITHUB_ENV
           fi
+
 
 
   build-and-release:
     needs: checkCommitName
-    if: needs.format-and-check.outputs.should_run_build == 'true'
+    if: needs.checkCommitName.outputs.SHOULD_RUN == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
