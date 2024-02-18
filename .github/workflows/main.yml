@@ -10,50 +10,44 @@ permissions:
   issues: write
 
 jobs:
-  checkCommitName:
+  build-and-release:
     runs-on: ubuntu-latest
-    outputs:
-      should_run_build: ${{ steps.commit_filter.outputs.should_run }}
     steps:
       - uses: actions/checkout@v2
       
-# Etape pour vérifier le message de commit
+      # Etape pour vérifier le message de commit
       - name: Check Commit Message for 'nouvelle version'
         id: commit_filter
         run: |
           echo "Checking for 'nouvelle version' in the commit message..."
           if git log -1 --pretty=%B | grep -iq "nouvelle version"; then
-            echo "::set-output name=should_run::true"
+            echo "SHOULD_RUN=true" >> $GITHUB_ENV
           else
-            echo "::set-output name=should_run::false"
-          fi
-
-
-  build-and-release:
-    needs: checkCommitName
-    if: needs.format-and-check.outputs.should_run_build == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
+            echo "SHOULD_RUN=false" >> $GITHUB_ENV
+            exit 1 # Arrête le job si 'nouvelle version' n'est pas trouvé
 
       # Configuration de l'environnement Python
       - name: Set up Python
+        if: env.SHOULD_RUN == 'true'
         uses: actions/setup-python@v2
         with:
           python-version: '3.12.2'
 
       # Installation des dépendances Python
       - name: Install dependencies
+        if: env.SHOULD_RUN == 'true'
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       # Construction de l'exécutable avec PyInstaller
       - name: Build Application
+        if: env.SHOULD_RUN == 'true'
         run: pyinstaller --onefile main.py
 
       # Archivage de l'exécutable
       - name: Archive Production Artifacts
+        if: env.SHOULD_RUN == 'true'
         uses: actions/upload-artifact@v2
         with:
           name: Logiciel Feuilles de caisses 
@@ -61,17 +55,18 @@ jobs:
 
       # Génération d'un tag basé sur la date et l'heure
       - name: Generate Tag
-        id: generate_tag
-        run: echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')"
+        if: env.SHOULD_RUN == 'true'
+        run: echo "TAG=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
       # Création de la release GitHub avec l'exécutable
       - name: Create Release
+        if: env.SHOULD_RUN == 'true'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.generate_tag.outputs.tag }}
-          release_name: Release ${{ steps.generate_tag.outputs.tag }}
+          tag_name: ${{ env.TAG }}
+          release_name: Release ${{ env.TAG }}
           body: "Description of the release"
           draft: false
           prerelease: false
