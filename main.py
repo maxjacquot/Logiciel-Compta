@@ -3,7 +3,7 @@ import glob
 import tkinter as tk
 import tkinter.font
 from tkinter import filedialog 
-
+ 
 
 class ComptaAuto:
     tablfile = ""         ## valeur de stockage du lien du paquet de copie
