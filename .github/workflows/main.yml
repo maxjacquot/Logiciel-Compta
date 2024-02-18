@@ -67,11 +67,11 @@ jobs:
           patch=$(echo "$latest_tag" | cut -d '.' -f 3)
           commit_message=$(git log -1 --pretty=%B)
           
-          if echo "$commit_message" | grep -iq "majeur"; then
+          if echo "$commit_message" | grep -iq "majeure"; then
             major=$((major + 1))
             minor=0
             patch=0
-          elif echo "$commit_message" | grep -iq "mineur"; then
+          elif echo "$commit_message" | grep -iq "mineure"; then
             minor=$((minor + 1))
             patch=0
           elif echo "$commit_message" | grep -iq "patch"; then
