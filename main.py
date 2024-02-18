@@ -2,7 +2,7 @@ import openpyxl as pyxl
 import glob
 import tkinter as tk
 import tkinter.font
-from tkinter import filedialog  
+from tkinter import filedialog   
  
 
 class ComptaAuto:
