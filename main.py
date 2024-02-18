@@ -183,9 +183,9 @@ class Application(tk.Tk):
         self.opt.config(width=10, font=('Helvetica', 12))
         self.opt.place(x=20,y=180)
 
-        OptionList2 = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
+        OptionList2 = [2023, 2024, 2025, 2026]
         self.variable2 = tk.StringVar(self)
-        self.variable2.set(OptionList2[4])
+        self.variable2.set(OptionList2[1])
         self.opt2 = tk.OptionMenu(self, self.variable2, *OptionList2)
         self.opt2.config(width=10, font=('Helvetica', 12))
         self.opt2.place(x=200, y=180)
