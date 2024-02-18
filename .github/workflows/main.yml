@@ -41,10 +41,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Construction de l'exécutable avec PyInstaller
-      - name: Build Application
+      - name: Build Application with PyInstaller
         if: env.SHOULD_RUN == 'true'
-        run: pyinstaller --onefile main.py
+        run: pyinstaller main.spec
 
       # Archivage de l'exécutable
       - name: Archive Production Artifacts

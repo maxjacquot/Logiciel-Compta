@@ -3,7 +3,14 @@ import glob
 import tkinter as tk
 import tkinter.font
 from tkinter import filedialog    
- 
+import requests
+import subprocess
+import sys
+import os
+from packaging import version
+
+global versionApp
+versionApp= "v1.0.2"
 
 class ComptaAuto:
     tablfile = ""         ## valeur de stockage du lien du paquet de copie
@@ -11,7 +18,6 @@ class ComptaAuto:
     mois = ""
     annee = 0
     lignedebut = 0
-    version= "Version 1.2"
     nbJours = 0
 
     def AffilierTableur(self,file ):       ## deff d'affiliation de correctionfile Appellée apres pression sur le bouton
@@ -197,8 +203,6 @@ class Application(tk.Tk):
         self.boutonComptaAuto = tk.Button( text="Lancer compta automatique", command=lambda: self.TestCompta()).place(x=20, y=310)
         self.quitButon= tk.Button(self,text="Quitter", command=lambda :self.destroy()).place(x=330, y=360)
 
-        self.canva1.create_text(30, 390, text=self.Compta.version)
-
     def AskComptaFile(self):
 
         FileC = filedialog.askopenfilename(initialdir="Desktop/", title="Feuille de compta")
@@ -264,9 +268,51 @@ class Application(tk.Tk):
             self.AffichageMessage("Compta effectuée")
             print(" COMPTA FINI")
 
+def get_latest_release_info():
+    """Récupère les informations de la dernière version sur GitHub."""
+    api_url = "https://api.github.com/repos/PxMaax/Logiciel-Compta/releases/latest"
+    response = requests.get(api_url)
+    response.raise_for_status()  # Gère les erreurs de requête
+    return response.json()
+
+def download_and_replace_exe(download_url, exe_path):
+    """Télécharge et remplace l'exécutable actuel par la nouvelle version."""
+    response = requests.get(download_url)
+    with open(exe_path, 'wb') as file:
+        file.write(response.content)
+
+def update_application():
+    """Vérifie et applique les mises à jour de l'application."""
+    try:
+        print('dans update_application')
+        release_info = get_latest_release_info()
+        print('release_info :' , release_info)
+        latest_version = release_info['tag_name']
+        print('latest_version :' , latest_version)
+        current_version = versionApp  # Remplacer par la logique pour obtenir la version actuelle de votre app
+        print('current_version :' , current_version)
+        print('true or false : ' , (version.parse(latest_version) > version.parse(current_version)))
+        if version.parse(latest_version) > version.parse(current_version):
+            print("Une nouvelle version est disponible.")
+            exe_url = next((asset['browser_download_url'] for asset in release_info['assets'] if asset['name'] == "main.exe"), None)
+            print('exe_url', exe_url)
+            if exe_url:
+                print("Téléchargement de la nouvelle version...")
+                exe_path = sys.executable
+                download_and_replace_exe(exe_url, exe_path)
+                print("Mise à jour terminée. Redémarrage de l'application...")
+                os.execv(exe_path, sys.argv)  # Redémarre l'application
+                return True
+            return False
+        return False
+    except Exception as e:
+        print(f"Erreur lors de la mise à jour: {e}")
+        return False
+
 if __name__ == "__main__":
-    app = Application()
-    app.mainloop()
+    if(update_application() != False):
+        app = Application()
+        app.mainloop()
 
 print("chaussure :) " )   ##j'ai retrouvé mes chaussures !
 
