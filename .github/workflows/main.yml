@@ -96,7 +96,7 @@ jobs:
           echo "Using new tag ${{ env.NEW_TAG }} for operations"
 
       # Création de la release GitHub avec l'exécutable
-      - name: Create Release
+      - name: create_release
         id: create_release
         if: env.SHOULD_RUN == 'true'
         uses: actions/create-release@v1
