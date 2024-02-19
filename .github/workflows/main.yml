@@ -124,8 +124,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/main.exe
-          asset_name: main.exe
+          asset_path: ./dist/main  # Retirez l'extension .exe pour Linux/macOS
+          asset_name: main  # Vous pouvez toujours le nommer main.exe pour la clarté
           asset_content_type: application/octet-stream
 
       - name: Upload Updater Release Asset
@@ -135,6 +135,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/updater.exe
-          asset_name: updater.exe
+          asset_path: ./dist/updater  # Retirez l'extension .exe pour Linux/macOS
+          asset_name: updater  # Idem, l'extension .exe peut être ajoutée pour la clarté
           asset_content_type: application/octet-stream
+
