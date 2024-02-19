@@ -268,55 +268,7 @@ class Application(tk.Tk):
             self.AffichageMessage("Compta effectuée")
             print(" COMPTA FINI")
 
-def get_latest_release_info():
-    """Récupère les informations de la dernière version sur GitHub."""
-    api_url = "https://api.github.com/repos/PxMaax/Logiciel-Compta/releases/latest"
-    response = requests.get(api_url)
-    response.raise_for_status()  # Gère les erreurs de requête
-    return response.json()
-
-def download_and_replace_exe(download_url, exe_path):
-    """Télécharge et remplace l'exécutable actuel par la nouvelle version."""
-    response = requests.get(download_url)
-    with open(exe_path, 'wb') as file:
-        file.write(response.content)
-
-def update_application():
-    """Vérifie et applique les mises à jour de l'application."""
-    try:
-        print('dans update_application')
-        release_info = get_latest_release_info()
-        print('release_info', release_info)
-        latest_version = release_info['tag_name']
-        print('latest_version :' , latest_version)
-        current_version = versionApp  # Remplacer par la logique pour obtenir la version actuelle de votre app
-        print('current_version :' , current_version)
-        print('version 1 ' , version.parse(latest_version))
-        print('version 2 ' , version.parse(current_version))
-        print('true or false : ' , (version.parse(latest_version) > version.parse(current_version)))
-        if version.parse(latest_version) > version.parse(current_version):
-            print("Une nouvelle version est disponible.")
-            exe_url = next((asset['browser_download_url'] for asset in release_info['assets'] if asset['name'] == "main.exe"), None)
-            print('exe_url', exe_url)
-            for asset in release_info['assets']:
-                print(asset['name'])
-            if exe_url:
-                print("Téléchargement de la nouvelle version...")
-                exe_path = sys.executable
-                download_and_replace_exe(exe_url, exe_path)
-                print("Mise à jour terminée. Redémarrage de l'application...")
-                os.execv(exe_path, sys.argv)  # Redémarre l'application
-                return True
-            
-            return False
-        return False
-    except Exception as e:
-        print(f"Erreur lors de la mise à jour: {e}")
-        return False
-
 if __name__ == "__main__":
-    # if(update_application() != False):
-    update_application()
     app = Application()
     app.mainloop()
 

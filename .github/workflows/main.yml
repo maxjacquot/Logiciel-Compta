@@ -41,9 +41,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: save new tag
+        if: env.SHOULD_RUN == 'true'
+        run: echo ${{ env.NEW_TAG }} > current_version.txt    
+
       - name: Build Application with PyInstaller
         if: env.SHOULD_RUN == 'true'
         run: pyinstaller main.spec
+
+      - name: Build Updater with PyInstaller
+        if: env.SHOULD_RUN == 'true'
+        run: pyinstaller --onefile updater.py
 
       # Archivage de l'exécutable
       - name: Archive Production Artifacts
@@ -51,7 +59,14 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Logiciel Feuilles de caisses 
-          path: ./dist/main/
+          path: ./dist/main
+
+      - name: Archive Production Artifacts
+        if: env.SHOULD_RUN == 'true'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Logiciel Feuilles de caisses 
+          path: ./dist/updater/  
 
             # Ajout d'une étape pour lister le contenu de ./dist/main/
       - name: List content of the dist/main directory
@@ -88,13 +103,6 @@ jobs:
         shell: bash
 
 
-
-      # Utilisation du nouveau tag pour les étapes suivantes
-      - name: Use new tag
-        if: env.SHOULD_RUN == 'true'
-        run: |
-          echo "Using new tag ${{ env.NEW_TAG }} for operations"
-
       # Création de la release GitHub avec l'exécutable
       - name: create_release
         id: create_release
@@ -109,15 +117,24 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload Release Asset
+      - name: Upload Main Release Asset
         if: env.SHOULD_RUN == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/main
+          asset_path: ./dist/main.exe
           asset_name: main.exe
           asset_content_type: application/octet-stream
-    
 
+      - name: Upload Updater Release Asset
+        if: env.SHOULD_RUN == 'true'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/updater.exe
+          asset_name: updater.exe
+          asset_content_type: application/octet-stream
