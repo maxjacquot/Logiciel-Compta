@@ -21,9 +21,8 @@ jobs:
         id: commit_filter
         run: |
           echo "Checking for 'nouvelle version' in the commit message..."
-          if git log -1 --pretty=%B | grep -iq "nouvelle version|nouveau patch"; then
+          if git log -1 --pretty=%B | grep -iq "nouvelle version"; then
             echo "SHOULD_RUN=true" >> $GITHUB_ENV
-            echo "Le message du commit posssede : nouvelle version."
           else
             echo "SHOULD_RUN=false" >> $GITHUB_ENV
             echo "Le workflow ne va pas creer de release."
