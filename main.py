@@ -10,7 +10,7 @@ import os
 from packaging import version
 
 global versionApp
-versionApp= "v1.0.1"
+versionApp= "v1.0.1" 
 
 class ComptaAuto:
     tablfile = ""         ## valeur de stockage du lien du paquet de copie
