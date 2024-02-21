@@ -11,15 +11,13 @@ permissions:
 
 jobs:
   build-and-release:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     outputs:
       should_run: ${{ steps.commit_filter.outputs.should_run }}
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v4
       # Etape pour vérifier le message de commit
-      - name: Check Commit Message for 'nouvelle version'
+      - name: Check Commit Message for 'nouvelle version'  $GITHUB_OUTPUT
         id: commit_filter
         run: |
           echo "Checking for 'nouvelle version' in the commit message..."
@@ -31,7 +29,7 @@ jobs:
           fi
       - name: Set up Python
         if: needs.commit_filter.outputs.should_run == 'true'
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.12.2'
 
@@ -53,14 +51,14 @@ jobs:
       # Archivage de l'exécutable
       - name: Archive Production Artifacts
         if: needs.commit_filter.outputs.should_run == 'true'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Logiciel Feuilles de caisses 
           path: ./dist/main
 
       - name: Archive Production Artifacts
         if: needs.commit_filter.outputs.should_run == 'true'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Logiciel Feuilles de caisses 
           path: ./dist/updater/  
