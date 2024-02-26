@@ -62,19 +62,55 @@ jobs:
         - name: Download Application Artifact
           uses: actions/download-artifact@v2
           with:
-            name: Application - Feuilles de caisses
+            name: Application
             path: dist/
 
         - name: Download Updater Artifact
           uses: actions/download-artifact@v2
           with:
-            name: Updater - Feuilles de caisses
+            name: Updater
             path: dist/
 
         - name: Generate new version based on input
           run: |
-            # Votre script existant ici pour générer new_tag basé sur le tag existant
+            if ! latest_tag=$(git describe --tags --abbrev=0 2>/dev/null); then
+              echo "No tags found. Setting a default tag."
+              latest_tag="v0.0.0"
+            fi
+            echo "Latest tag: $latest_tag"
+            major=$(echo "$latest_tag" | cut -d '.' -f 1 | sed 's/v//')
+            minor=$(echo "$latest_tag" | cut -d '.' -f 2)
+            patch=$(echo "$latest_tag" | cut -d '.' -f 3)
+            
+            case "${{ github.event.inputs.release }}" in
+              major)
+                major=$((major + 1))
+                minor=0
+                patch=0
+                ;;
+              minor)
+                minor=$((minor + 1))
+                patch=0
+                ;;
+              patch)
+                patch=$((patch + 1))
+                ;;
+              *)
+                echo "Invalid input. No version change."
+                exit 1
+                ;;
+            esac
+            
+            new_tag="v${major}.${minor}.${patch}"
+            echo "New tag: $new_tag"
+            echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
           shell: bash
+
+        - name: save new tag
+          run: echo ${{ env.NEW_TAG }} > current_version.txt   
+
+        - name: List files in dist directory
+          run: ls -lah ./dist  
 
         - name: Create Release
           id: create_release
