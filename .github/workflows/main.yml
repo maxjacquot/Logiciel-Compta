@@ -2,6 +2,16 @@ name: Auto Release
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Type of release:'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
  
 permissions:
   contents: write
@@ -10,99 +20,45 @@ permissions:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-    outputs:
-      should_run: ${{ steps.commit_filter.outputs.should_run }}
     steps:
       - uses: actions/checkout@v4
-      # Etape pour vérifier le message de commit
-      - name: Check Commit Message for 'nouvelle version'
-        id: commit_filter
-        run: |
-          echo "Checking for 'nouvelle version' in the commit message..."
-          if git log -1 --pretty=%B | grep -iq "nouvelle version"; then
-            echo "::set-output name=should_run::true"
-          else
-            echo "::set-output name=should_run::true"
-            echo "Le workflow ne va pas creer de release."
-          fi
+      
       - name: Set up Python
-        if: needs.commit_filter.outputs.should_run == 'true'
         uses: actions/setup-python@v4
         with:
           python-version: '3.12.2'
 
       # Installation des dépendances Python
       - name: Install dependencies
-        if: needs.commit_filter.outputs.should_run == 'true'
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt 
 
       - name: Build Application with PyInstaller
-        if: needs.commit_filter.outputs.should_run == 'true'
         run: pyinstaller main.spec
 
       - name: Build Updater with PyInstaller
-        if: needs.commit_filter.outputs.should_run == 'true'
         run: pyinstaller --onefile updater.py
 
       # Archivage de l'exécutable
       - name: Archive Production Artifacts
-        if: needs.commit_filter.outputs.should_run == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: Logiciel Feuilles de caisses 
           path: ./dist/main
 
       - name: Archive Production Artifacts
-        if: needs.commit_filter.outputs.should_run == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: Logiciel Feuilles de caisses 
           path: ./dist/updater/  
 
-            # Ajout d'une étape pour lister le contenu de ./dist/main/
-      - name: List content of the dist/main directory
-        if: needs.commit_filter.outputs.should_run == 'true'
-        run: ls -la ./dist/ 
-
-
-      - name: Generate new version based on commit message
-        if: needs.commit_filter.outputs.should_run == 'true'
-        run: |
-          if ! latest_tag=$(git describe --tags --abbrev=0 2>/dev/null); then
-            echo "No tags found. Setting a default tag."
-            latest_tag="v0.0.0"
-          fi
-          echo "Latest tag: $latest_tag"
-          major=$(echo "$latest_tag" | cut -d '.' -f 1 | sed 's/v//')
-          minor=$(echo "$latest_tag" | cut -d '.' -f 2)
-          patch=$(echo "$latest_tag" | cut -d '.' -f 3)
-          commit_message=$(git log -1 --pretty=%B)
-          
-          if echo "$commit_message" | grep -iq "nouvelle version majeure"; then
-            major=$((major + 1))
-            minor=0
-            patch=0
-          elif echo "$commit_message" | grep -iq "nouvelle version mineure"; then
-            minor=$((minor + 1))
-            patch=0
-          elif echo "$commit_message" | grep -iq "nouveau patch"; then
-            patch=$((patch + 1))
-          fi
-          new_tag="v${major}.${minor}.${patch}"
-          echo "New tag: $new_tag"
-          echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
-        shell: bash
-
       - name: save new tag
-        if: needs.commit_filter.outputs.should_run == 'true'
         run: echo ${{ env.NEW_TAG }} > current_version.txt   
 
       # Création de la release GitHub avec l'exécutable
       - name: create_release
         id: create_release
-        if: needs.commit_filter.outputs.should_run == 'true'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -114,7 +70,6 @@ jobs:
           prerelease: false
 
       - name: Upload Main Release Asset
-        if: needs.commit_filter.outputs.should_run == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -125,7 +80,6 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Upload Updater Release Asset
-        if: needs.commit_filter.outputs.should_run == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
