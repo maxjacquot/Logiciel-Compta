@@ -55,7 +55,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate new version based on input
-        if: needs.commit_filter.outputs.should_run == 'true'
         run: |
           if ! latest_tag=$(git describe --tags --abbrev=0 2>/dev/null); then
             echo "No tags found. Setting a default tag."
@@ -94,17 +93,6 @@ jobs:
         run: echo ${{ env.NEW_TAG }} > current_version.txt   
 
       - name: Create Release
-        uses: actions/create-release@v1
-        with:
-          tag_name: 'v1.0.0'
-          release_name: Release ${{ env.NEW_TAG }}
-          body: Description of the release
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -116,12 +104,23 @@ jobs:
           draft: false
           prerelease: false
 
+
       - name: Upload Main Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/main/main.exe
+          asset_path: ./dist/main
           asset_name: main.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload Updater Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/updater 
+          asset_name: updater.exe 
           asset_content_type: application/octet-stream
