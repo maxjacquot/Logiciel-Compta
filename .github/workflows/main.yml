@@ -60,13 +60,13 @@ jobs:
         - uses: actions/checkout@v4
 
         - name: Download Application Artifact
-          uses: actions/download-artifact@v2
+          uses: actions/download-artifact@v4
           with:
             name: Application
             path: dist/
 
         - name: Download Updater Artifact
-          uses: actions/download-artifact@v2
+          uses: actions/download-artifact@v4
           with:
             name: Updater
             path: dist/
