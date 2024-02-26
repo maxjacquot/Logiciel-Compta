@@ -50,7 +50,8 @@ jobs:
           name: Updater - Feuilles de caisses
           path: ./dist/updater.exe 
 
-  release :    
+  release :   
+    needs: build   
     runs-on: ubuntu-latest
     steps:
       - name: Generate new version based on input
