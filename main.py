@@ -61,12 +61,12 @@ class ComptaAuto:
             if wsjour[case].value == "Especes POINT VERT":
                 casevaleur = 'D' + str(ligne + 1)
                 casenb = 'C' + str(ligne + 1)
-                worksheet['I' + lignecourrante].value = wsjour[casevaleur].value
-                worksheet['J' + lignecourrante].value = wsjour[casenb].value
+                worksheet['G' + lignecourrante].value = wsjour[casevaleur].value
+                worksheet['H' + lignecourrante].value = wsjour[casenb].value
 
             if wsjour[case].value == "Avoir":
                 casevaleur = 'D' + str(ligne + 1)
-                worksheet['M' + lignecourrante].value = wsjour[casevaleur].value
+                worksheet['K' + lignecourrante].value = wsjour[casevaleur].value
 
             if wsjour[case].value == "REMB. JEU":
                 casevaleur = 'D' + str(ligne + 1)
@@ -82,15 +82,15 @@ class ComptaAuto:
 
             if wsjour[case].value == "Mise en compte":
                 casevaleur = 'D' + str(ligne + 1)
-                worksheet['O' + lignecourrante].value = wsjour[casevaleur].value
+                worksheet['J' + lignecourrante].value = wsjour[casevaleur].value
 
             if wsjour[case].value == "Paiement facture":
                 casevaleur = 'C' + str(ligne + 1)
-                worksheet['P' + lignecourrante].value = wsjour[casevaleur].value
+                worksheet['K' + lignecourrante].value = wsjour[casevaleur].value
 
         print("FIN ADD:" + str(valRL))
-        worksheet['H' + lignecourrante].value = valRL  ## remboursemenent loto car 2 cas et impossible de faire .value + .value
-        worksheet['G' + lignecourrante].value = valRJ
+        worksheet['F' + lignecourrante].value = valRL  ## remboursemenent loto car 2 cas et impossible de faire .value + .value
+        worksheet['E' + lignecourrante].value = valRJ
 
 
     def AffilierDoss(self, file):       ## def d'affiliation de paquetfile Apellée apres pression dur le bouton
