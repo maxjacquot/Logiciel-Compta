@@ -31,10 +31,19 @@ def update_application():
     release_info = get_latest_release_info()
     latest_version = release_info['tag_name']
     # Supposons que vous stockez la version actuelle dans un fichier
-    with open('current_version.txt', 'r') as file:
-        current_version = file.read().strip()
+    if os.path.exists('current_version.txt'):
+        # Si le fichier existe, lisez la version actuelle
+        with open('current_version.txt', 'r') as file:
+            current_version = file.read().strip()
+        
+    else:
+        # Si le fichier n'existe pas, considérez que la mise à jour est nécessaire
+        print("Fichier de version actuelle introuvable. Une mise à jour sera effectuée.")
+        needs_update = True
+        current_version = "0.0.0"  # Supposons une version "0" si le fichier n'existe pas
+    needs_update = version.parse(latest_version) > version.parse(current_version)
     
-    if version.parse(latest_version) > version.parse(current_version):
+    if needs_update:
         print(f"Une nouvelle version {latest_version} est disponible.")
         asset = next((asset for asset in release_info['assets'] if asset['name'].lower() == 'main.exe'), None)
         print('asset' , asset)
