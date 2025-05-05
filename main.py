@@ -157,10 +157,10 @@ class ComptaAuto:
             for jour in range(
                 self.nbjours
             ):  ## parcours des feuilles de caisses par jour
-                if jour == 0:  ## si on est le premier janvier pas de caisse a faire
+                if jour == 0:
                     print()
                 else:
-                    self.fillJour(str(self.lignedebut + jour), ws, file_list[jour - 1])
+                    self.fillJour(str(self.lignedebut + jour), ws, file_list[jour])
 
         elif self.mois == "MAI":
             for jour in range(
@@ -169,7 +169,7 @@ class ComptaAuto:
                 if jour == 0:
                     print()
                 else:
-                    self.fillJour(str(self.lignedebut + jour), ws, file_list[jour - 1])
+                    self.fillJour(str(self.lignedebut + jour), ws, file_list[jour])
 
         elif self.mois == "DECEMBRE":
             for jour in range(
