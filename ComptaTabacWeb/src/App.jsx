@@ -76,11 +76,18 @@ function App() {
     [currentYear]
   );
 
+  // Nouvelle logique de validation du formulaire
+  const isFormValid = useMemo(() => {
+    return (
+      fichierCompta &&
+      fichesCaisse.length > 0 &&
+      mois !== '' &&
+      annee !== ''
+    );
+  }, [fichierCompta, fichesCaisse, mois, annee]);
+
   const handleSubmit = () => {
-    if (!fichierCompta || fichesCaisse.length === 0 || !mois || !annee) {
-      alert('Merci de remplir tous les champs !');
-      return;
-    }
+    if (!isFormValid) return;
     console.log({ fichierCompta, fichesCaisse, mois, annee });
     alert('Traitement lancé !');
   };
@@ -125,7 +132,15 @@ function App() {
             />
           </div>
 
-          <button onClick={handleSubmit} style={styles.submitButton}>
+          <button
+            onClick={handleSubmit}
+            style={{
+              ...styles.submitButton,
+              opacity: isFormValid ? 1 : 0.6,
+              cursor: isFormValid ? 'pointer' : 'not-allowed'
+            }}
+            disabled={!isFormValid}
+          >
             ▶️ Lancer le traitement
           </button>
         </div>
@@ -190,7 +205,7 @@ const styles = {
   submitButton: {
     width: '100%', padding: '0.75rem', backgroundColor: '#111827',
     color: '#fff', border: 'none', borderRadius: '8px',
-    fontSize: '1rem', cursor: 'pointer', fontWeight: '600'
+    fontSize: '1rem', fontWeight: '600'
   },
   sidebar: {
     flex: 1, backgroundColor: '#fff', padding: '1rem',
