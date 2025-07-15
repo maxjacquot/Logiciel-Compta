@@ -6,10 +6,14 @@ import os
 import csv
 from io import BytesIO, StringIO
 
+
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+# Limite la taille des uploads à 10 Mo
+app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
+# CORS restrict to frontend domain in prod (ex: 'https://monfront.com')
+CORS(app, resources={r"/*": {"origins": "*"}})  # À restreindre en prod
 
 
 # Utilitaires pour injection (à adapter selon ta logique métier)
@@ -123,5 +127,10 @@ def traiter_compta():
         )
 
 
+# Pour gunicorn/uwsgi, il suffit d'exposer 'app'
+# Exemple de commande gunicorn :
+# gunicorn -w 4 -b 0.0.0.0:5000 app:app
+
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    # Pour debug local uniquement
+    app.run(port=5000, debug=False)
