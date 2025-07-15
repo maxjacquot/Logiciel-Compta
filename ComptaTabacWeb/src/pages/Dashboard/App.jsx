@@ -62,7 +62,7 @@ export default function Dashboard() {
             ▶️ Executer le programme de feuilles de caisses
           </button>
 
-          {/* Overlay de chargement qui bloque toute l'UI */}
+          {/* Overlay de chargement en pop-up centré */}
           {loading && (
             <div className={styles.overlayLoading}>
               <div className={styles.loadingBox}>
@@ -71,7 +71,6 @@ export default function Dashboard() {
               </div>
             </div>
           )}
-
           {/* Notification centrée */}
           {notif && (
             <div className={styles.overlayNotif}>

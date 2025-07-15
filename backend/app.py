@@ -85,7 +85,7 @@ def inject_data(wb, mois, annee, csv_files):
 
         valRJ = 0
         valRL = 0
-        for i in range(1, min(31, len(rows))):  # skip header
+        for i in range(0, min(31, len(rows))):  # ne saute plus la première ligne
             print(f"[DEBUG] Traitement de la ligne {i} pour le jour {jour + 1}")
             row = rows[i]
             print(f"[DEBUG] row = {row}")

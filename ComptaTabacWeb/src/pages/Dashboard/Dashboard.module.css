@@ -1,3 +1,41 @@
+/* Overlay de loading centré qui bloque toute l'UI */
+.overlayLoading {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.25);
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loadingBox {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2.5em 2em 2em 2em;
+  min-width: 320px;
+  box-shadow: 0 2px 24px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #2563eb;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1.5em;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.loadingText {
+  font-size: 1.2em;
+  color: #2563eb;
+  font-weight: 600;
+}
 
 /* Unification stricte des boutons principaux avec la couleur .fileButton (#2563eb) */
 .blueButton,
