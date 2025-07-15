@@ -49,7 +49,7 @@ export default function Dashboard() {
         <div className={styles.formContainer}>
           <h1 className={styles.title}>🧾 Compta Automatique</h1>
           <FileUploader label="Fichier de suivi de compta (.xlsx)" accept=".xlsx" files={fichierCompta} setFiles={setFichierCompta} />
-          <FileUploader label="Fiches de caisse (.csv)" accept=".csv" multiple files={fichesCaisse} setFiles={setFichesCaisse} />
+          <FileUploader label="Feuilles de caisse (.csv)" accept=".csv" multiple files={fichesCaisse} setFiles={setFichesCaisse} />
           <div className={styles.row}>
             <SelectInput label="Mois" options={MONTHS} value={mois} onChange={setMois} />
             <SelectInput label="Année" options={yearOptions} value={annee} onChange={setAnnee} />
