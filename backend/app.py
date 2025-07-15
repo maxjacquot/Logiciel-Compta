@@ -67,33 +67,16 @@ def inject_data(wb, mois, annee, csv_files):
 
     print(f"[DEBUG] Jours à sauter : {jours_a_sauter}")
 
-    # Jours fériés non travaillés (1er janvier, 1er mai, 25 décembre)
-    jours_feries = []
-    if mois == "JANVIER":
-        jours_feries.append(0)  # 1er janvier (index 0)
-    if mois == "MAI":
-        jours_feries.append(0)  # 1er mai (index 0)
-    if mois == "DECEMBRE":
-        jours_feries.append(24)  # 25 décembre (index 24)
-
-    csv_idx = 0
+    # Injection pour chaque jour
     for jour in range(nb_jours):
         print(f"[DEBUG] Traitement du jour {jour + 1}")
-        if jour in jours_feries:
-            print(
-                f"[DEBUG] Jour férié non travaillé (jour {jour + 1}), aucune feuille de caisse consommée."
-            )
+        if jour in jours_a_sauter:
             continue
-        if csv_idx >= len(csv_files):
-            print(
-                f"[DEBUG] Plus de fichiers CSV à traiter (csv_idx={csv_idx}), on arrête."
-            )
-            break
-        csv_file = csv_files[csv_idx]
+        if jour >= len(csv_files):
+            continue
+        csv_file = csv_files[jour]
         csv_file.stream.seek(0)
-        reader = csv.reader(
-            StringIO(csv_file.stream.read().decode("utf-8")), delimiter=";"
-        )
+        reader = csv.reader(StringIO(csv_file.stream.read().decode("utf-8")))
         print(f"[DEBUG] Lecture de {csv_file.filename}")
         print(f"[DEBUG] Lecture de {reader}")
         rows = list(reader)
@@ -102,13 +85,14 @@ def inject_data(wb, mois, annee, csv_files):
 
         valRJ = 0
         valRL = 0
-        for i in range(0, min(31, len(rows))):
+        for i in range(1, min(31, len(rows))):  # skip header
             print(f"[DEBUG] Traitement de la ligne {i} pour le jour {jour + 1}")
             row = rows[i]
             type_val = row[1] if len(row) > 1 else None
             print(f"[DEBUG] Type de valeur : {type_val} (à la ligne {i})")
             d_val = clean_float(row[3]) if len(row) > 3 else 0
             c_val = clean_float(row[2]) if len(row) > 2 else 0
+            print(f"[DEBUG] Valeurs : D={d_val}, C={c_val}")
 
             excel_row = start_row + jour
             if type_val == "Espèces":
@@ -157,7 +141,6 @@ def inject_data(wb, mois, annee, csv_files):
                 ws[f"K{excel_row}"] = c_val
         ws[f"F{start_row + jour}"] = valRL
         ws[f"E{start_row + jour}"] = valRJ
-        csv_idx += 1
     return wb
 
 
