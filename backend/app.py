@@ -127,6 +127,11 @@ def traiter_compta():
         )
 
 
+@app.route("/status", methods=["GET"])
+def status():
+    return "ok", 200
+
+
 # Pour gunicorn/uwsgi, il suffit d'exposer 'app'
 # Exemple de commande gunicorn :
 # gunicorn -w 4 -b 0.0.0.0:5000 app:app
