@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import FileUploader from '../../components/FileUploader';
 import SelectInput from '../../components/SelectInput';
 import { MONTHS, getYearOptions } from '../../constants/date';
-// import { sendToBackendAndDownload } from '../../services/fileService';
+import { sendToBackendAndGetBlob } from '../../services/fileService';
 import styles from './Dashboard.module.css';
 
 
@@ -22,19 +22,7 @@ export default function Dashboard() {
     setNotif(null);
     setLoading(true);
     try {
-      // Copie de sendToBackendAndDownload mais on récupère le blob pour le bouton
-      const formData = new FormData();
-      formData.append('excel', fichierCompta);
-      fichesCaisse.forEach(file => formData.append('csvs', file));
-      formData.append('mois', mois);
-      formData.append('annee', annee);
-
-      const response = await fetch('http://localhost:5000/traiter-compta', {
-        method: 'POST',
-        body: formData,
-      });
-      if (!response.ok) throw new Error('Erreur lors du traitement côté serveur');
-      const blob = await response.blob();
+      const blob = await sendToBackendAndGetBlob({ fichierCompta, fichesCaisse, mois, annee });
       setNotif({ type: 'success', message: 'Traitement terminé !', blob });
     } catch (err) {
       setNotif({ type: 'error', message: err.message });
