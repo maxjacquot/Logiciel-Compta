@@ -69,18 +69,31 @@ export default function Dashboard() {
                     <div className={styles.notifMsg}>{notif.message}</div>
                     <button
                       className={styles.downloadButton}
-                      onClick={() => {
-                        const url = window.URL.createObjectURL(notif.blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `Compta-${mois}-${annee}.xlsx`;
-                        document.body.appendChild(a);
-                        a.click();
-                        a.remove();
-                        window.URL.revokeObjectURL(url);
+                      onClick={async () => {
+                        // Envoi du fichier à Make.com
+                        const webhookUrl = import.meta.env.VITE_MAKE_WEBHOOK_URL;
+                        if (!webhookUrl) {
+                          alert('Webhook Make.com non configuré. Ajoute VITE_MAKE_WEBHOOK_URL dans ton .env');
+                          return;
+                        }
+                        const formData = new FormData();
+                        formData.append('file', notif.blob, `Compta-${mois}-${annee}.xlsx`);
+                        // Ajout de la variable isProduction
+                        const isProduction = import.meta.env.MODE === 'production';
+                        formData.append('isProduction', isProduction ? 'true' : 'false');
+                        try {
+                          const res = await fetch(webhookUrl, {
+                            method: 'POST',
+                            body: formData,
+                          });
+                          if (!res.ok) throw new Error('Erreur lors de l\'envoi à Make.com');
+                          alert('Fichier envoyé à Make.com !');
+                        } catch (err) {
+                          alert('Erreur Make.com : ' + err.message);
+                        }
                       }}
                     >
-                      📥 Télécharger le document
+                      Mettre à jour le fichier de compta
                     </button>
                   </>
                 ) : (
